@@ -1,17 +1,17 @@
 import React from 'react';
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
+import { NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 const { Header, Content, Sider } = Layout;
 
-const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
+const items1: MenuProps['items'] = ['Main'].map((key) => ({
     key,
-    label: `nav ${key}`,
+    label: key,
 }));
 
-const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
+const items2: MenuProps['items'] = [UserOutlined, NotificationOutlined].map((icon, index) => {
     const key = String(index + 1);
 
     return {
@@ -19,8 +19,8 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOu
         icon: React.createElement(icon),
         label: `Mgmt ${key}`,
 
-        children: new Array(4).fill(null).map((_, j) => {
-            const subKey = index * 4 + j + 1;
+        children: new Array(2).fill(null).map((_, j) => {
+            const subKey = index * 2 + j + 1;
             return {
                 key: subKey,
                 label: `User${subKey}`,
@@ -46,6 +46,9 @@ const MainLayout: React.FC = () => {
                     defaultSelectedKeys={['2']}
                     items={items1}
                     style={{ flex: 1, minWidth: 0 }}
+                    onClick={() => {
+                        navigate('/');
+                    }}
                 />
             </Header>
             <Layout>
@@ -63,8 +66,14 @@ const MainLayout: React.FC = () => {
                 </Sider>
                 <Layout style={{ padding: '0 24px 24px' }}>
                     <Breadcrumb
-                        items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
-                        style={{ margin: '16px 0' }}
+                        items={[
+                            {
+                                title: 'Home',
+                                onClick: () => {},
+                            },
+                            { title: 'List', onClick: () => {} },
+                        ]}
+                        style={{ margin: '16px 0', cursor: 'pointer' }}
                     />
                     <Content
                         style={{
