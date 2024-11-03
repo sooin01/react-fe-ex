@@ -1,6 +1,7 @@
+import type { TableProps, TabsProps } from 'antd';
+import { Space, Table, Tabs, Tag } from 'antd';
+import { plainToInstance } from 'class-transformer';
 import React from 'react';
-import { Tabs, Space, Table, Tag } from 'antd';
-import type { TabsProps, TableProps } from 'antd';
 
 interface DataType {
     key: string;
@@ -82,6 +83,26 @@ const data: DataType[] = [
         tags: ['cool', 'teacher'],
     },
 ];
+
+class User {
+    name!: string;
+    age!: number;
+    address!: string;
+    tags!: string[];
+}
+
+class CUser {
+    name!: string;
+    age!: number;
+    address!: string;
+    tags!: string[];
+}
+
+const users = plainToInstance<User, DataType>(User, data);
+users.map((user) => console.log(1, user.name, user instanceof CUser, user instanceof User));
+
+const cusers = users.map((user) => Object.assign(new CUser(), user));
+cusers.map((user) => console.log(2, user.name, user instanceof CUser, user instanceof User));
 
 const onChange = (key: string) => {
     console.log(key);
