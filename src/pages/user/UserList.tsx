@@ -99,10 +99,10 @@ class CUser {
 }
 
 const users = plainToInstance<User, DataType>(User, data);
-users.map((user) => console.log(1, user.name, user instanceof CUser, user instanceof User));
+// users.map((user) => console.log(1, user.name, user instanceof CUser, user instanceof User));
 
 const cusers = users.map((user) => Object.assign(new CUser(), user));
-cusers.map((user) => console.log(2, user.name, user instanceof CUser, user instanceof User));
+// cusers.map((user) => console.log(2, user.name, user instanceof CUser, user instanceof User));
 
 const onChange = (key: string) => {
     console.log(key);
