@@ -1,133 +1,68 @@
-import type { TableProps, TabsProps } from 'antd';
-import { Space, Table, Tabs, Tag } from 'antd';
-import { plainToInstance } from 'class-transformer';
-import React from 'react';
+import { Table, TableProps } from 'antd';
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useLoadingStore } from '../../utils/ApiUtil';
+import User from './model/User';
+import useUserStore from './store/useUserStore';
 
-interface DataType {
-    key: string;
-    name: string;
-    age: number;
-    address: string;
-    tags: string[];
-}
+const UserList = () => {
+  const { users, getUsers, clearUsers } = useUserStore();
+  const { loading } = useLoadingStore();
 
-const columns: TableProps<DataType>['columns'] = [
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
+
+  // columns
+  const columns: TableProps<User>['columns'] = [
     {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: (text) => <a>{text}</a>,
+      dataIndex: 'key',
+      hidden: true,
     },
     {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
+      title: 'Title',
+      dataIndex: 'title',
+      render: (text: string, record: User, index: number) => {
+        return <Link to={`/user/${record.seq}`}>{text}</Link>;
+      },
     },
     {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
+      title: 'Category',
+      dataIndex: 'category',
     },
     {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: (_, { tags }) => (
-            <>
-                {tags.map((tag) => {
-                    let color = tag.length > 5 ? 'geekblue' : 'green';
-                    if (tag === 'loser') {
-                        color = 'volcano';
-                    }
-                    return (
-                        <Tag color={color} key={tag}>
-                            {tag.toUpperCase()}
-                        </Tag>
-                    );
-                })}
-            </>
-        ),
+      title: 'Sub category',
+      dataIndex: 'subCategory',
     },
     {
-        title: 'Action',
-        key: 'action',
-        render: (_, record) => (
-            <Space size="middle">
-                <a>Invite {record.name}</a>
-                <a>Delete</a>
-            </Space>
-        ),
+      title: 'Updater',
+      dataIndex: 'updateBy',
     },
-];
+  ];
 
-const data: DataType[] = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-    },
-];
-
-class User {
-    name!: string;
-    age!: number;
-    address!: string;
-    tags!: string[];
-}
-
-class CUser {
-    name!: string;
-    age!: number;
-    address!: string;
-    tags!: string[];
-}
-
-const users = plainToInstance<User, DataType>(User, data);
-// users.map((user) => console.log(1, user.name, user instanceof CUser, user instanceof User));
-
-const cusers = users.map((user) => Object.assign(new CUser(), user));
-// cusers.map((user) => console.log(2, user.name, user instanceof CUser, user instanceof User));
-
-const onChange = (key: string) => {
-    console.log(key);
+  return (
+    <div>
+      <h1>User List</h1>
+      <div>
+        <button
+          onClick={() => {
+            getUsers();
+          }}
+        >
+          조회
+        </button>
+        <button
+          onClick={() => {
+            clearUsers();
+          }}
+        >
+          초기화
+        </button>
+      </div>
+      {loading && <div>Loading...</div>}
+      {!loading && <Table<User> columns={columns} dataSource={users} />}
+    </div>
+  );
 };
 
-const items: TabsProps['items'] = [
-    {
-        key: '1',
-        label: 'Tab 1',
-        children: <Table<DataType> columns={columns} dataSource={data} />,
-    },
-    {
-        key: '2',
-        label: 'Tab 2',
-        children: 'Content of Tab Pane 2',
-    },
-    {
-        key: '3',
-        label: 'Tab 3',
-        children: 'Content of Tab Pane 3',
-    },
-];
-
-const List: React.FC = () => {
-    return <Tabs defaultActiveKey="1" items={items} onChange={onChange} />;
-};
-
-export default List;
+export default UserList;
