@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NotFound from './pages/common/error/NotFound';
 import Home from './pages/Home';
 import MainLayout from './pages/MainLayout';
 import UserForm from './pages/user/UserForm';
@@ -21,6 +22,7 @@ const App = () => {
             <Route path=":id" element={<Article />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

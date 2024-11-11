@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { create } from 'zustand';
 import ApiUtil from '../../../utils/ApiUtil';
 import User from '../model/User';
@@ -9,23 +8,15 @@ interface Page<T> {
 
 interface UserState {
   users: User[];
-  user?: User;
+  user?: User | null;
   getUsers: () => Promise<void>;
   getUser: (seq: number) => Promise<void>;
   clearUsers: () => void;
   setUser: (_user: User) => void;
-  saveUser: (user: User) => Promise<void>;
+  saveUser: (_user: User) => Promise<User>;
   deleteUser: (seq: number) => Promise<void>;
+  resetUser: () => void;
 }
-
-axios.interceptors.request.use(
-  (config) => {
-    return config;
-  },
-  function (error) {
-    return Promise.reject(error);
-  },
-);
 
 const useUserStore = create<UserState>((set) => ({
   users: [],
@@ -45,14 +36,20 @@ const useUserStore = create<UserState>((set) => ({
       user: _user,
     }));
   },
-  saveUser: async (user) => {
-    await axios.post('/user/users', user);
+  saveUser: async (_user) => {
+    const response = await ApiUtil.post<User>('/user/users', _user);
+    return response.data;
   },
   deleteUser: async (seq) => {
-    await axios.delete(`/user/users/${seq}`);
+    await ApiUtil.delete(`/user/users/${seq}`);
     // set((state) => ({
     //   users: state.users.filter((user) => user.seq !== seq),
     // }));
+  },
+  resetUser: () => {
+    set((state) => ({
+      user: null,
+    }));
   },
 }));
 

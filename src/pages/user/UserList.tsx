@@ -1,13 +1,20 @@
-import { Table, TableProps } from 'antd';
+import { Button, Space, Table, TableProps } from 'antd';
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useLoadingStore } from '../../utils/ApiUtil';
+import { Link, useNavigate } from 'react-router-dom';
+import useCodeStore from '../common/store/useCodeStore';
 import User from './model/User';
 import useUserStore from './store/useUserStore';
 
 const UserList = () => {
   const { users, getUsers, clearUsers } = useUserStore();
-  const { loading } = useLoadingStore();
+  const { getCode, getCodes } = useCodeStore();
+  const navigate = useNavigate();
+
+  // 코드 조회
+  useEffect(() => {
+    const codeIds = ['category', 'sub_category'];
+    getCodes(codeIds);
+  }, [getCodes]);
 
   useEffect(() => {
     getUsers();
@@ -29,10 +36,16 @@ const UserList = () => {
     {
       title: 'Category',
       dataIndex: 'category',
+      render(text: string) {
+        return <span>{getCode('category', text)}</span>;
+      },
     },
     {
       title: 'Sub category',
       dataIndex: 'subCategory',
+      render(text: string) {
+        return <span>{getCode('sub_category', text)}</span>;
+      },
     },
     {
       title: 'Updater',
@@ -44,23 +57,37 @@ const UserList = () => {
     <div>
       <h1>User List</h1>
       <div>
-        <button
-          onClick={() => {
-            getUsers();
-          }}
-        >
-          조회
-        </button>
-        <button
-          onClick={() => {
-            clearUsers();
-          }}
-        >
-          초기화
-        </button>
+        <Space>
+          <Button
+            type="primary"
+            htmlType="button"
+            onClick={() => {
+              getUsers();
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            type="default"
+            htmlType="button"
+            onClick={() => {
+              clearUsers();
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="default"
+            htmlType="button"
+            onClick={() => {
+              navigate('/user/0');
+            }}
+          >
+            Add
+          </Button>
+        </Space>
       </div>
-      {loading && <div>Loading...</div>}
-      {!loading && <Table<User> columns={columns} dataSource={users} />}
+      <Table<User> columns={columns} dataSource={users} />
     </div>
   );
 };

@@ -1,17 +1,27 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, Modal, Select, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import useCodeStore from '../common/store/useCodeStore';
 import useUserStore from './store/useUserStore';
 
 const UserForm = () => {
   const { seq } = useParams<string>();
   const [form] = Form.useForm();
-  const { user, getUser } = useUserStore();
+  const { user, getUser, setUser, saveUser, resetUser } = useUserStore();
+  const { codes, getCodes } = useCodeStore();
+  const navigate = useNavigate();
+  const { confirm } = Modal;
+
+  // 코드 조회
+  useEffect(() => {
+    const codeIds = ['category', 'sub_category'];
+    getCodes(codeIds);
+  }, [getCodes]);
 
   useEffect(() => {
     if (seq) {
-      getUser(parseInt(seq));
+      getUser(Number(seq));
     }
   }, [getUser, seq]);
 
@@ -19,6 +29,10 @@ const UserForm = () => {
     if (user) {
       form.setFieldsValue(user);
     }
+
+    return () => {
+      form.resetFields();
+    };
   }, [user, form]);
 
   return (
@@ -31,24 +45,78 @@ const UserForm = () => {
         wrapperCol={{ span: 14 }}
         layout="horizontal"
         disabled={false}
-        initialValues={{ remember: true }}
         style={{ maxWidth: 600 }}
         autoComplete="off"
         onFinish={(values) => {
-          console.log('values', values);
+          confirm({
+            title: 'Save?',
+            okText: 'Yes',
+            okType: 'primary',
+            cancelText: 'No',
+            async onOk() {
+              const _user = Object.assign({ ...user }, values);
+              setUser(await saveUser(_user));
+            },
+            onCancel() {},
+          });
         }}
       >
-        <Input type="hidden" name="seq" value={user?.seq} />
-        <Form.Item label="Input" name="title">
+        <Input type="hidden" name="seq" />
+        <Form.Item
+          label="Category"
+          name="category"
+          rules={[{ required: true, message: '${label} is required' }]}
+        >
+          <Select>
+            {codes?.get('category')?.map((code) => (
+              <Select.Option key={code.key} value={code.codeId}>
+                {code.codeName}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Sub Category"
+          name="subCategory"
+          rules={[{ required: true, message: '${label} is required' }]}
+        >
+          <Select>
+            {codes?.get('sub_category')?.map((code) => (
+              <Select.Option key={code.key} value={code.codeId}>
+                {code.codeName}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Title"
+          name="title"
+          rules={[{ required: true, message: '${label} is required' }]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item label="TextArea" name="content">
+        <Form.Item
+          label="Content"
+          name="content"
+          rules={[{ required: true, message: '${label} is required' }]}
+        >
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
+          <Space>
+            <Button
+              htmlType="button"
+              onClick={() => {
+                resetUser();
+                navigate('/user');
+              }}
+            >
+              List
+            </Button>
+            <Button type="primary" htmlType="submit">
+              Save
+            </Button>
+          </Space>
         </Form.Item>
       </Form>
     </div>
