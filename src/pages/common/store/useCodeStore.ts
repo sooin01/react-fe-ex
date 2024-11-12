@@ -11,19 +11,11 @@ interface CodeState {
 const useCodeStore = create<CodeState>((set, get) => ({
   codes: new Map(),
   getCodes: async (codeGroupIds) => {
-    const response = await ApiUtil.get<Code[]>('/code/codes', {
+    const response = await ApiUtil.get<Map<string, Code[]>>('/code/codes', {
       codeGroupIds: codeGroupIds,
     });
 
-    const map = new Map<string, Code[]>();
-    response.data.forEach((code) => {
-      if (!map.has(code.codeGroupId)) {
-        map.set(code.codeGroupId, []);
-      }
-      map.get(code.codeGroupId)?.push(code);
-    });
-
-    set({ codes: map });
+    set({ codes: new Map(Object.entries(response.data)) });
   },
   getCode: (codeGroupId: string, codeId: string) => {
     return (

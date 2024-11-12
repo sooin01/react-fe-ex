@@ -1,10 +1,18 @@
 import { Modal } from 'antd';
 
-const Confirm = ({ onOk }: { onOk: () => void }) => {
+const Confirm = ({
+  title = 'Save?',
+  onOk,
+  afterClose,
+}: {
+  title?: string;
+  onOk: () => void;
+  afterClose?: () => void;
+}) => {
   const { confirm } = Modal;
 
   return confirm({
-    title: 'Save?',
+    title: title,
     okText: 'Yes',
     okType: 'primary',
     cancelText: 'No',
@@ -12,6 +20,11 @@ const Confirm = ({ onOk }: { onOk: () => void }) => {
       onOk();
     },
     onCancel() {},
+    afterClose: () => {
+      if (typeof afterClose === 'function') {
+        afterClose();
+      }
+    },
   });
 };
 

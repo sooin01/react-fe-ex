@@ -1,12 +1,13 @@
 import { Button, Space, Table, TableProps } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Confirm from '../../components/Confirm';
 import useCodeStore from '../common/store/useCodeStore';
 import User from './model/User';
 import useUserStore from './store/useUserStore';
 
 const UserList = () => {
-  const { page, getUsers, clearUsers } = useUserStore();
+  const { page, getUsers, clearUsers, deleteUser } = useUserStore();
   const { getCode, getCodes } = useCodeStore();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -24,7 +25,7 @@ const UserList = () => {
   // columns
   const columns: TableProps<User>['columns'] = [
     {
-      dataIndex: 'key',
+      dataIndex: 'seq',
       hidden: true,
     },
     {
@@ -53,6 +54,9 @@ const UserList = () => {
       dataIndex: 'updateBy',
     },
   ];
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedRows, setSelectedRows] = useState<User[]>([]);
 
   return (
     <div>
@@ -86,11 +90,40 @@ const UserList = () => {
           >
             Add
           </Button>
+          <Button
+            type="default"
+            htmlType="button"
+            danger
+            onClick={() => {
+              if (selectedRows.length === 0) {
+                return;
+              }
+
+              Confirm({
+                title: 'Delete?',
+                async onOk() {
+                  await deleteUser(selectedRows.map((row) => row.seq));
+                  setSelectedRowKeys([]);
+                  setSelectedRows([]);
+                  await getUsers({ page: 0, pageSize: 5 });
+                },
+              });
+            }}
+          >
+            Delete
+          </Button>
         </Space>
       </div>
       <Table<User>
         columns={columns}
         dataSource={page.content}
+        rowSelection={{
+          selectedRowKeys,
+          onChange: (selectedRowKeys, selectedRows) => {
+            setSelectedRowKeys(selectedRowKeys);
+            setSelectedRows(selectedRows);
+          },
+        }}
         pagination={{
           current: page?.pageable.pageNumber + 1,
           pageSize: page?.pageable.pageSize,
@@ -99,6 +132,8 @@ const UserList = () => {
             getUsers({ page: page - 1, pageSize });
           },
           position: ['bottomCenter'],
+          pageSizeOptions: [5, 10, 15, 20],
+          showSizeChanger: false,
         }}
       />
     </div>

@@ -64,6 +64,7 @@ const UserForm = () => {
         <Form.Item
           label="Category"
           name="category"
+          initialValue={'001'}
           rules={[{ required: true }]}
         >
           <Select>
@@ -77,6 +78,7 @@ const UserForm = () => {
         <Form.Item
           label="Sub Category"
           name="subCategory"
+          initialValue={'001'}
           rules={[{ required: true }]}
         >
           <Select>
