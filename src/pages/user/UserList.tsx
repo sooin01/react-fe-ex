@@ -6,7 +6,7 @@ import User from './model/User';
 import useUserStore from './store/useUserStore';
 
 const UserList = () => {
-  const { users, getUsers, clearUsers } = useUserStore();
+  const { page, users, getUsers, clearUsers } = useUserStore();
   const { getCode, getCodes } = useCodeStore();
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ const UserList = () => {
   }, [getCodes]);
 
   useEffect(() => {
-    getUsers();
+    getUsers({});
   }, [getUsers]);
 
   // columns
@@ -62,7 +62,7 @@ const UserList = () => {
             type="primary"
             htmlType="button"
             onClick={() => {
-              getUsers();
+              getUsers({});
             }}
           >
             Search
@@ -87,7 +87,19 @@ const UserList = () => {
           </Button>
         </Space>
       </div>
-      <Table<User> columns={columns} dataSource={users} />
+      <Table<User>
+        columns={columns}
+        dataSource={users}
+        pagination={{
+          current: page?.number ? page?.number + 1 : 1,
+          pageSize: page?.size,
+          total: page?.totalElements,
+          onChange: (page, pageSize) => {
+            // set page
+            getUsers({});
+          },
+        }}
+      />
     </div>
   );
 };

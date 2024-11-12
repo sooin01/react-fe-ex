@@ -1,7 +1,8 @@
-import { Button, Form, Input, Modal, Select, Space } from 'antd';
+import { Button, Form, Input, Select, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Confirm from '../../components/Confirm';
 import useCodeStore from '../common/store/useCodeStore';
 import useUserStore from './store/useUserStore';
 
@@ -11,7 +12,6 @@ const UserForm = () => {
   const { user, getUser, setUser, saveUser, resetUser } = useUserStore();
   const { codes, getCodes } = useCodeStore();
   const navigate = useNavigate();
-  const { confirm } = Modal;
 
   // 코드 조회
   useEffect(() => {
@@ -48,16 +48,11 @@ const UserForm = () => {
         style={{ maxWidth: 600 }}
         autoComplete="off"
         onFinish={(values) => {
-          confirm({
-            title: 'Save?',
-            okText: 'Yes',
-            okType: 'primary',
-            cancelText: 'No',
+          Confirm({
             async onOk() {
               const _user = Object.assign({ ...user }, values);
               setUser(await saveUser(_user));
             },
-            onCancel() {},
           });
         }}
       >

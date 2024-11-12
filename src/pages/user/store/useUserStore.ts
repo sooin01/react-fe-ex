@@ -1,15 +1,19 @@
 import { create } from 'zustand';
 import ApiUtil from '../../../utils/ApiUtil';
+import Page from '../../common/model/Page';
 import User from '../model/User';
 
-interface Page<T> {
-  content: T[];
-}
-
 interface UserState {
+  page?: Page<User>;
   users: User[];
   user?: User | null;
-  getUsers: () => Promise<void>;
+  getUsers: ({
+    page,
+    pageSize,
+  }: {
+    page?: number;
+    pageSize?: number;
+  }) => Promise<void>;
   getUser: (seq: number) => Promise<void>;
   clearUsers: () => void;
   setUser: (_user: User) => void;
@@ -18,11 +22,14 @@ interface UserState {
   resetUser: () => void;
 }
 
-const useUserStore = create<UserState>((set) => ({
+const useUserStore = create<UserState>((set, get) => ({
   users: [],
-  getUsers: async () => {
-    const response = await ApiUtil.get<Page<User>>('/user/users');
-    set((state) => ({ users: response.data.content }));
+  getUsers: async ({ page = 1, pageSize = 10 }) => {
+    const response = await ApiUtil.get<Page<User>>('/user/users', {
+      page: page,
+      size: pageSize,
+    });
+    set((state) => ({ page: response.data, users: response.data.content }));
   },
   getUser: async (seq) => {
     const response = await ApiUtil.get<User>(`/user/users/${seq}`);
