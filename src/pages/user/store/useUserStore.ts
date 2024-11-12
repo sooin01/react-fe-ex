@@ -4,8 +4,7 @@ import Page from '../../common/model/Page';
 import User from '../model/User';
 
 interface UserState {
-  page?: Page<User>;
-  users: User[];
+  page: Page<User>;
   user?: User | null;
   getUsers: ({
     page,
@@ -22,9 +21,24 @@ interface UserState {
   resetUser: () => void;
 }
 
+const initialState = {
+  content: [],
+  pageable: { pageNumber: 0, pageSize: 10 },
+  totalElements: 0,
+  totalPages: 0,
+};
+
 const useUserStore = create<UserState>((set, get) => ({
-  users: [],
-  getUsers: async ({ page = 1, pageSize = 10 }) => {
+  page: initialState,
+  getUsers: async ({
+    page = get().page?.pageable.pageNumber,
+    pageSize = get().page?.pageable.pageSize,
+  }: {
+    page?: number;
+    pageSize?: number;
+  }) => {
+    console.log(page, pageSize);
+
     const response = await ApiUtil.get<Page<User>>('/user/users', {
       page: page,
       size: pageSize,
@@ -36,7 +50,7 @@ const useUserStore = create<UserState>((set, get) => ({
     set((state) => ({ user: response.data }));
   },
   clearUsers: () => {
-    set({ users: [] });
+    set({ page: initialState });
   },
   setUser: (_user) => {
     set((state) => ({
@@ -49,12 +63,9 @@ const useUserStore = create<UserState>((set, get) => ({
   },
   deleteUser: async (seq) => {
     await ApiUtil.delete(`/user/users/${seq}`);
-    // set((state) => ({
-    //   users: state.users.filter((user) => user.seq !== seq),
-    // }));
   },
   resetUser: () => {
-    set((state) => ({
+    set(() => ({
       user: null,
     }));
   },

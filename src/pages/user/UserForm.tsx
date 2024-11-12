@@ -33,7 +33,7 @@ const UserForm = () => {
     return () => {
       form.resetFields();
     };
-  }, [user, form]);
+  }, [user, form, resetUser]);
 
   return (
     <div>

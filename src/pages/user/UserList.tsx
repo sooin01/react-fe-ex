@@ -6,7 +6,7 @@ import User from './model/User';
 import useUserStore from './store/useUserStore';
 
 const UserList = () => {
-  const { page, users, getUsers, clearUsers } = useUserStore();
+  const { page, getUsers, clearUsers } = useUserStore();
   const { getCode, getCodes } = useCodeStore();
   const navigate = useNavigate();
 
@@ -89,14 +89,13 @@ const UserList = () => {
       </div>
       <Table<User>
         columns={columns}
-        dataSource={users}
+        dataSource={page.content}
         pagination={{
-          current: page?.number ? page?.number + 1 : 1,
-          pageSize: page?.size,
+          current: page?.pageable.pageNumber + 1,
+          pageSize: page?.pageable.pageSize,
           total: page?.totalElements,
           onChange: (page, pageSize) => {
-            // set page
-            getUsers({});
+            getUsers({ page: page - 1, pageSize });
           },
         }}
       />
