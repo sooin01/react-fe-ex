@@ -9,7 +9,7 @@ import useUserStore from './store/useUserStore';
 const UserForm = () => {
   const { seq } = useParams<string>();
   const [form] = Form.useForm();
-  const { user, getUser, setUser, saveUser, resetUser } = useUserStore();
+  const { user, getUser, setUser, saveUser } = useUserStore();
   const { codes, getCodes } = useCodeStore();
   const navigate = useNavigate();
 
@@ -31,22 +31,25 @@ const UserForm = () => {
     }
 
     return () => {
-      resetUser();
       form.resetFields();
     };
-  }, [user, form, resetUser]);
+  }, [user, form]);
 
   return (
     <div>
       <h1>User Detail</h1>
       <Form
+        validateMessages={{
+          // eslint-disable-next-line no-template-curly-in-string
+          required: '${label} is required',
+        }}
         form={form}
         name="user"
         labelCol={{ span: 4 }}
-        wrapperCol={{ span: 14 }}
+        wrapperCol={{ span: 12 }}
         layout="horizontal"
         disabled={false}
-        style={{ maxWidth: 600 }}
+        style={{ maxWidth: 800 }}
         autoComplete="off"
         onFinish={(values) => {
           Confirm({
@@ -61,7 +64,7 @@ const UserForm = () => {
         <Form.Item
           label="Category"
           name="category"
-          rules={[{ required: true, message: '${label} is required' }]}
+          rules={[{ required: true }]}
         >
           <Select>
             {codes?.get('category')?.map((code) => (
@@ -74,7 +77,7 @@ const UserForm = () => {
         <Form.Item
           label="Sub Category"
           name="subCategory"
-          rules={[{ required: true, message: '${label} is required' }]}
+          rules={[{ required: true }]}
         >
           <Select>
             {codes?.get('sub_category')?.map((code) => (
@@ -84,18 +87,10 @@ const UserForm = () => {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item
-          label="Title"
-          name="title"
-          rules={[{ required: true, message: '${label} is required' }]}
-        >
+        <Form.Item label="Title" name="title" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item
-          label="Content"
-          name="content"
-          rules={[{ required: true, message: '${label} is required' }]}
-        >
+        <Form.Item label="Content" name="content" rules={[{ required: true }]}>
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4, span: 16 }}>

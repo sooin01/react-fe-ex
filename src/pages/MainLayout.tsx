@@ -1,4 +1,5 @@
 import { NotificationOutlined, UserOutlined } from '@ant-design/icons';
+import { nanoid } from '@reduxjs/toolkit';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import React from 'react';
@@ -80,7 +81,7 @@ const MainLayout: React.FC = () => {
             style={{ height: '100%', borderRight: 0 }}
             items={items2}
             onClick={({ key, keyPath }) => {
-              navigate('/' + key);
+              navigate('/' + key, { state: nanoid() });
             }}
           />
         </Sider>

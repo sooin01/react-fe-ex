@@ -1,6 +1,6 @@
 import { Button, Space, Table, TableProps } from 'antd';
 import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useCodeStore from '../common/store/useCodeStore';
 import User from './model/User';
 import useUserStore from './store/useUserStore';
@@ -9,16 +9,17 @@ const UserList = () => {
   const { page, getUsers, clearUsers } = useUserStore();
   const { getCode, getCodes } = useCodeStore();
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   // 코드 조회
   useEffect(() => {
     const codeIds = ['category', 'sub_category'];
     getCodes(codeIds);
-  }, [getCodes]);
+  }, [getCodes, state]);
 
   useEffect(() => {
     getUsers({});
-  }, [getUsers]);
+  }, [getUsers, state]);
 
   // columns
   const columns: TableProps<User>['columns'] = [
@@ -29,7 +30,7 @@ const UserList = () => {
     {
       title: 'Title',
       dataIndex: 'title',
-      render: (text: string, record: User, index: number) => {
+      render: (text: string, record: User) => {
         return <Link to={`/user/${record.seq}`}>{text}</Link>;
       },
     },
@@ -97,6 +98,7 @@ const UserList = () => {
           onChange: (page, pageSize) => {
             getUsers({ page: page - 1, pageSize });
           },
+          position: ['bottomCenter'],
         }}
       />
     </div>
