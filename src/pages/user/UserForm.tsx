@@ -31,6 +31,7 @@ const UserForm = () => {
     }
 
     return () => {
+      resetUser();
       form.resetFields();
     };
   }, [user, form, resetUser]);
@@ -102,7 +103,6 @@ const UserForm = () => {
             <Button
               htmlType="button"
               onClick={() => {
-                resetUser();
                 navigate('/user');
               }}
             >

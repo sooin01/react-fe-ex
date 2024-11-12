@@ -33,12 +33,7 @@ const useUserStore = create<UserState>((set, get) => ({
   getUsers: async ({
     page = get().page?.pageable.pageNumber,
     pageSize = get().page?.pageable.pageSize,
-  }: {
-    page?: number;
-    pageSize?: number;
   }) => {
-    console.log(page, pageSize);
-
     const response = await ApiUtil.get<Page<User>>('/user/users', {
       page: page,
       size: pageSize,
