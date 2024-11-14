@@ -39,9 +39,13 @@ const boardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getBoards.fulfilled, (state, action) => {
-      state.page = action.payload;
-    });
+    builder
+      .addCase(getBoards.fulfilled, (state, action) => {
+        state.page = action.payload;
+      })
+      .addCase(getBoards.rejected, (state, action) => {
+        console.log(action.error.message);
+      });
   },
 });
 

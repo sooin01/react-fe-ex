@@ -1,13 +1,15 @@
-import { Button, Space, Table, TableProps } from 'antd';
+import { Button, Flex, Space, Spin, Table, TableProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Confirm from '../../components/Confirm';
+import { useLoadingStore } from '../../utils/ApiUtil';
 import useCodeStore from '../common/store/useCodeStore';
 import User from './model/User';
 import useUserStore from './store/useUserStore';
 
 const UserList = () => {
   const { page, getUsers, clearUsers, deleteUser } = useUserStore();
+  const { loading } = useLoadingStore();
   const { getCode, getCodes } = useCodeStore();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -61,7 +63,8 @@ const UserList = () => {
   return (
     <div>
       <h1>User List</h1>
-      <div>
+      <Spin spinning={loading} tip="Loading..." fullscreen={true} />
+      <Flex gap="middle" vertical>
         <Space>
           <Button
             type="primary"
@@ -113,29 +116,29 @@ const UserList = () => {
             Delete
           </Button>
         </Space>
-      </div>
-      <Table
-        columns={columns}
-        dataSource={page.content}
-        rowSelection={{
-          selectedRowKeys,
-          onChange: (selectedRowKeys, selectedRows) => {
-            setSelectedRowKeys(selectedRowKeys);
-            setSelectedRows(selectedRows);
-          },
-        }}
-        pagination={{
-          current: page?.pageable.pageNumber + 1,
-          pageSize: page?.pageable.pageSize,
-          total: page?.totalElements,
-          onChange: (page, pageSize) => {
-            getUsers({ page: page - 1, pageSize });
-          },
-          position: ['bottomCenter'],
-          pageSizeOptions: [5, 10, 15, 20],
-          showSizeChanger: false,
-        }}
-      />
+        <Table
+          columns={columns}
+          dataSource={page.content}
+          rowSelection={{
+            selectedRowKeys,
+            onChange: (selectedRowKeys, selectedRows) => {
+              setSelectedRowKeys(selectedRowKeys);
+              setSelectedRows(selectedRows);
+            },
+          }}
+          pagination={{
+            current: page?.pageable.pageNumber + 1,
+            pageSize: page?.pageable.pageSize,
+            total: page?.totalElements,
+            onChange: (page, pageSize) => {
+              getUsers({ page: page - 1, pageSize });
+            },
+            position: ['bottomCenter'],
+            pageSizeOptions: [5, 10, 15, 20],
+            showSizeChanger: false,
+          }}
+        />
+      </Flex>
     </div>
   );
 };

@@ -1,15 +1,17 @@
-import { Button, Space, Table, TableProps } from 'antd';
+import { Button, Flex, Space, Spin, Table, TableProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Confirm from '../../components/Confirm';
 import { useAppDispatch, useAppSelector } from '../../stores/hooks';
+import { useLoadingStore } from '../../utils/ApiUtil';
 import useCodeStore from '../common/store/useCodeStore';
 import Board from './model/Barod';
 import { getBoards } from './slice/boardSlice';
 
 const BoardList = () => {
   const { getCode, getCodes } = useCodeStore();
-  const page = useAppSelector((state) => state.board.page);
+  const { page } = useAppSelector((state) => state.board);
+  const { loading } = useLoadingStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -61,8 +63,9 @@ const BoardList = () => {
 
   return (
     <div>
+      <Spin spinning={loading} tip="Loading..." fullscreen={true} />
       <h1>Board List</h1>
-      <div>
+      <Flex gap="middle" vertical>
         <Space>
           <Button
             type="primary"
@@ -114,29 +117,29 @@ const BoardList = () => {
             Delete
           </Button>
         </Space>
-      </div>
-      <Table
-        columns={columns}
-        dataSource={page.content}
-        rowSelection={{
-          selectedRowKeys,
-          onChange: (selectedRowKeys, selectedRows) => {
-            setSelectedRowKeys(selectedRowKeys);
-            setSelectedRows(selectedRows);
-          },
-        }}
-        pagination={{
-          current: page?.pageable.pageNumber + 1,
-          pageSize: page?.pageable.pageSize,
-          total: page?.totalElements,
-          onChange: (page, pageSize) => {
-            dispatch(getBoards({ page: page - 1, pageSize }));
-          },
-          position: ['bottomCenter'],
-          pageSizeOptions: [5, 10, 15, 20],
-          showSizeChanger: false,
-        }}
-      />
+        <Table
+          columns={columns}
+          dataSource={page.content}
+          rowSelection={{
+            selectedRowKeys,
+            onChange: (selectedRowKeys, selectedRows) => {
+              setSelectedRowKeys(selectedRowKeys);
+              setSelectedRows(selectedRows);
+            },
+          }}
+          pagination={{
+            current: page?.pageable.pageNumber + 1,
+            pageSize: page?.pageable.pageSize,
+            total: page?.totalElements,
+            onChange: (page, pageSize) => {
+              dispatch(getBoards({ page: page - 1, pageSize }));
+            },
+            position: ['bottomCenter'],
+            pageSizeOptions: [5, 10, 15, 20],
+            showSizeChanger: false,
+          }}
+        />
+      </Flex>
     </div>
   );
 };

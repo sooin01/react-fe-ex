@@ -62,4 +62,6 @@ class ApiUtil {
   };
 }
 
+export const useLoadingStore = ApiUtil.apiUtil.useLoadingStore;
+
 export default ApiUtil.apiUtil;
