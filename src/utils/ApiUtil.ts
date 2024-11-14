@@ -15,7 +15,7 @@ class ApiUtil {
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: 'http://localhost:8080',
-      timeout: 15000,
+      timeout: 5000,
       paramsSerializer: function (params) {
         return qs.stringify(params, { arrayFormat: 'comma' });
       },

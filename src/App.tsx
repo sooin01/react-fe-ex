@@ -17,6 +17,9 @@ const App = () => {
           {/* User */}
           <Route path="/user" element={<UserList />} />
           <Route path="/user/:seq" element={<UserForm />} />
+          {/* Board */}
+          <Route path="/board" element={<UserList />} />
+          <Route path="/board/:seq" element={<UserForm />} />
           {/* Article */}
           <Route path="/articles" element={<Articles />}>
             <Route path=":id" element={<Article />} />

@@ -14,7 +14,6 @@ const useCodeStore = create<CodeState>((set, get) => ({
     const response = await ApiUtil.get<Map<string, Code[]>>('/code/codes', {
       codeGroupIds: codeGroupIds,
     });
-
     set({ codes: new Map(Object.entries(response.data)) });
   },
   getCode: (codeGroupId: string, codeId: string) => {

@@ -24,6 +24,10 @@ const leftMenus = [
         key: 'user',
         label: 'User',
       },
+      {
+        key: 'board',
+        label: 'Board',
+      },
     ],
   },
   {
