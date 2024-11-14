@@ -2,17 +2,15 @@ import { Button, Flex, Space, Spin, Table, TableProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Confirm from '../../components/Confirm';
-import { useAppDispatch, useAppSelector } from '../../stores/hooks';
 import { useLoadingStore } from '../../utils/ApiUtil';
 import useCodeStore from '../common/store/useCodeStore';
 import Board from './model/Barod';
-import { getBoards } from './slice/boardSlice';
+import useBoardStore from './store/useBoardStore';
 
 const BoardList = () => {
-  const { getCode, getCodes } = useCodeStore();
-  const { page } = useAppSelector((state) => state.board);
+  const { page, getBoards, clearBoards, deleteBoard } = useBoardStore();
   const { loading } = useLoadingStore();
-  const dispatch = useAppDispatch();
+  const { getCode, getCodes } = useCodeStore();
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -22,8 +20,8 @@ const BoardList = () => {
   }, [getCodes, state]);
 
   useEffect(() => {
-    dispatch(getBoards({}));
-  }, [dispatch, state]);
+    getBoards({});
+  }, [getBoards, state]);
 
   // columns
   const columns: TableProps<Board>['columns'] = [
@@ -71,7 +69,7 @@ const BoardList = () => {
             type="primary"
             htmlType="button"
             onClick={() => {
-              dispatch(getBoards({}));
+              getBoards({});
             }}
           >
             Search
@@ -80,7 +78,7 @@ const BoardList = () => {
             type="default"
             htmlType="button"
             onClick={() => {
-              // clearUsers();
+              clearBoards();
             }}
           >
             Reset
@@ -106,10 +104,10 @@ const BoardList = () => {
               Confirm({
                 title: 'Delete?',
                 async onOk() {
-                  // await deleteUser(selectedRows.map((row) => row.seq));
+                  await deleteBoard(selectedRows.map((row) => row.seq));
                   setSelectedRowKeys([]);
                   setSelectedRows([]);
-                  // await getUsers({ page: 0, pageSize: 5 });
+                  await getBoards({ page: 0, pageSize: 5 });
                 },
               });
             }}
@@ -132,7 +130,7 @@ const BoardList = () => {
             pageSize: page?.pageable.pageSize,
             total: page?.totalElements,
             onChange: (page, pageSize) => {
-              dispatch(getBoards({ page: page - 1, pageSize }));
+              getBoards({ page: page - 1, pageSize });
             },
             position: ['bottomCenter'],
             pageSizeOptions: [5, 10, 15, 20],

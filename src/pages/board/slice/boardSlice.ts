@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../../../stores/store';
 import apiUtil from '../../../utils/ApiUtil';
 import Page from '../../common/model/Page';
 import Board from '../model/Barod';
@@ -19,16 +18,15 @@ const initialState: BoardState = {
 
 export const getBoards = createAsyncThunk(
   'board/getBoards',
-  async (
-    { page, pageSize }: { page?: number; pageSize?: number },
-    thunkAPI,
-  ) => {
-    const state = thunkAPI.getState() as RootState;
-    page = page ? page : state.board.page.pageable.pageNumber;
-    pageSize = pageSize ? pageSize : state.board.page.pageable.pageSize;
-
+  async ({
+    pageNumber,
+    pageSize,
+  }: {
+    pageNumber?: number;
+    pageSize?: number;
+  }) => {
     const response = await apiUtil.get<Page<Board>>('/board/boards', {
-      page: page,
+      page: pageNumber,
       size: pageSize,
     });
     return response.data;
@@ -40,6 +38,7 @@ const boardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // getBoards
     builder
       .addCase(getBoards.fulfilled, (state, action) => {
         state.page = action.payload;
