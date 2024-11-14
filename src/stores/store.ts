@@ -1,11 +1,13 @@
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
-import commentSlice from '../tests/stores/slices/commentSlice';
+import logger from 'redux-logger';
+import boardSlice from '../pages/board/slice/boardSlice';
 import counterSlice from '../tests/stores/slices/counterSlice';
 
-const rootReducer = combineSlices(counterSlice, commentSlice);
+const rootReducer = combineSlices(counterSlice, boardSlice);
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

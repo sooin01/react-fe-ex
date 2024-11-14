@@ -96,7 +96,10 @@ const MainLayout: React.FC = () => {
                 title: 'Home',
                 onClick: () => {},
               },
-              { title: 'List', onClick: () => {} },
+              {
+                title: 'List',
+                onClick: () => {},
+              },
             ]}
             style={{ margin: '16px 0', cursor: 'pointer' }}
           />

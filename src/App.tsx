@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import BoardForm from './pages/board/BoardForm';
+import BoardList from './pages/board/BoardList';
 import NotFound from './pages/common/error/NotFound';
 import Home from './pages/home/Home';
 import MainLayout from './pages/MainLayout';
@@ -18,8 +20,8 @@ const App = () => {
           <Route path="/user" element={<UserList />} />
           <Route path="/user/:seq" element={<UserForm />} />
           {/* Board */}
-          <Route path="/board" element={<UserList />} />
-          <Route path="/board/:seq" element={<UserForm />} />
+          <Route path="/board" element={<BoardList />} />
+          <Route path="/board/:seq" element={<BoardForm />} />
           {/* Article */}
           <Route path="/articles" element={<Articles />}>
             <Route path=":id" element={<Article />} />
