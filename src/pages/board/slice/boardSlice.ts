@@ -25,7 +25,8 @@ export const getBoards = createAsyncThunk(
   ) => {
     const state = thunkAPI.getState() as RootState;
     page = page ? page : state.board.page.pageable.pageNumber;
-    pageSize = page ? page : state.board.page.pageable.pageSize;
+    pageSize = pageSize ? pageSize : state.board.page.pageable.pageSize;
+
     const response = await apiUtil.get<Page<Board>>('/board/boards', {
       page: page,
       size: pageSize,
