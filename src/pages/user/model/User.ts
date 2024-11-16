@@ -1,10 +1,10 @@
 export default interface User {
   key: string;
-  seq: number;
-  category: string;
-  subCategory: string;
-  title: string;
-  content: string;
+  userId: string;
+  userName: string;
+  userType: string;
+  userState: string;
+  userRole: string;
   createAt: string;
   createBy: string;
   updateAt: string;

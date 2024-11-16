@@ -15,7 +15,7 @@ class ApiUtil {
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: 'http://localhost:8080',
-      timeout: 5000,
+      timeout: 15000,
       paramsSerializer: function (params) {
         return qs.stringify(params, { arrayFormat: 'comma' });
       },
@@ -51,6 +51,11 @@ class ApiUtil {
 
   post = async <T>(path: string, data: T): Promise<AxiosResponse<T>> => {
     const response = await this.axiosInstance.post(path, data);
+    return response;
+  };
+
+  put = async <T>(path: string, data: T): Promise<AxiosResponse<T>> => {
+    const response = await this.axiosInstance.put(path, data);
     return response;
   };
 

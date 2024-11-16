@@ -13,11 +13,11 @@ interface UserState {
     page?: number;
     pageSize?: number;
   }) => Promise<void>;
-  getUser: (seq: number) => Promise<void>;
+  getUser: (userId: string) => Promise<void>;
   clearUsers: () => void;
   setUser: (_user: User) => void;
   saveUser: (_user: User) => Promise<User>;
-  deleteUser: (seqs: number[]) => Promise<void>;
+  deleteUser: (userIds: string[]) => Promise<void>;
 }
 
 const initialState = {
@@ -42,8 +42,8 @@ const useUserStore = create<UserState>((set, get) => ({
       user: null,
     }));
   },
-  getUser: async (seq) => {
-    const response = await ApiUtil.get<User>(`/user/users/${seq}`);
+  getUser: async (userId) => {
+    const response = await ApiUtil.get<User>(`/user/users/${userId}`);
     set((state) => ({ user: response.data }));
   },
   clearUsers: () => {
@@ -58,9 +58,9 @@ const useUserStore = create<UserState>((set, get) => ({
     const response = await ApiUtil.post<User>('/user/users', _user);
     return response.data;
   },
-  deleteUser: async (seqs) => {
+  deleteUser: async (userIds) => {
     await ApiUtil.delete('/user/users', {
-      seqs: seqs,
+      userIds: userIds,
     });
   },
 }));

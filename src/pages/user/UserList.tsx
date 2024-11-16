@@ -31,25 +31,19 @@ const UserList = () => {
       hidden: true,
     },
     {
-      title: 'Title',
-      dataIndex: 'title',
+      title: 'ID',
+      dataIndex: 'userId',
       render: (text: string, record: User) => {
-        return <Link to={`/user/${record.seq}`}>{text}</Link>;
+        return <Link to={`/user/${record.userId}`}>{text}</Link>;
       },
     },
     {
-      title: 'Category',
-      dataIndex: 'category',
-      render(text: string) {
-        return <span>{getCode('category', text)}</span>;
-      },
+      title: 'Name',
+      dataIndex: 'userName',
     },
     {
-      title: 'Sub category',
-      dataIndex: 'subCategory',
-      render(text: string) {
-        return <span>{getCode('sub_category', text)}</span>;
-      },
+      title: 'Type',
+      dataIndex: 'userType',
     },
     {
       title: 'Updater',
@@ -88,7 +82,7 @@ const UserList = () => {
             type="default"
             htmlType="button"
             onClick={() => {
-              navigate('/user/0');
+              navigate('/user/new');
             }}
           >
             Add
@@ -105,7 +99,7 @@ const UserList = () => {
               Confirm({
                 title: 'Delete?',
                 async onOk() {
-                  await deleteUser(selectedRows.map((row) => row.seq));
+                  await deleteUser(selectedRows.map((row) => row.userId));
                   setSelectedRowKeys([]);
                   setSelectedRows([]);
                   await getUsers({ page: 0, pageSize: 5 });
