@@ -3,6 +3,7 @@ import BoardForm from './pages/board/BoardForm';
 import BoardList from './pages/board/BoardList';
 import NotFound from './pages/common/error/NotFound';
 import Home from './pages/home/Home';
+import Login from './pages/login/Login';
 import MainLayout from './pages/MainLayout';
 import UserForm from './pages/user/UserForm';
 import UserList from './pages/user/UserList';
@@ -13,9 +14,10 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route element={<MainLayout />}>
           {/* Home */}
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           {/* User */}
           <Route path="/user" element={<UserList />} />
           <Route path="/user/:userId" element={<UserForm />} />

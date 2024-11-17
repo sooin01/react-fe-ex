@@ -19,6 +19,9 @@ class ApiUtil {
       paramsSerializer: function (params) {
         return qs.stringify(params, { arrayFormat: 'comma' });
       },
+      headers: {
+        Authorization: 'sad',
+      },
     });
 
     this.useLoadingStore = create<LoadingState>((set) => ({
