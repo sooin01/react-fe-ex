@@ -4,9 +4,10 @@ import apiUtil from '../../../utils/ApiUtil';
 import LoginResDto from '../dto/LoginResDto';
 
 interface LoginState {
-  accessToken?: string;
-  refreshToken?: string;
+  accessToken?: string | null;
+  refreshToken?: string | null;
   login: (id: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
 const useLoginStore = create<LoginState>()(
@@ -20,6 +21,12 @@ const useLoginStore = create<LoginState>()(
         set((state) => ({
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
+        }));
+      },
+      logout: () => {
+        set((state) => ({
+          accessToken: null,
+          refreshToken: null,
         }));
       },
     }),

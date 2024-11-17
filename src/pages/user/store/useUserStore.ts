@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import ApiUtil from '../../../utils/ApiUtil';
+import apiUtil from '../../../utils/ApiUtil';
 import Page from '../../common/model/Page';
 import User from '../model/User';
 
@@ -33,18 +33,20 @@ const useUserStore = create<UserState>((set, get) => ({
     page = get().page?.pageable.pageNumber,
     pageSize = get().page?.pageable.pageSize,
   }) => {
-    const response = await ApiUtil.get<Page<User>>('/user/users', {
+    const response = await apiUtil.get<Page<User>>('/user/users', {
       page: page,
       size: pageSize,
     });
 
-    set((state) => ({
-      page: response.data,
-      user: null,
-    }));
+    if (response) {
+      set((state) => ({
+        page: response.data,
+        user: null,
+      }));
+    }
   },
   getUser: async (userId) => {
-    const response = await ApiUtil.get<User>(`/user/users/${userId}`);
+    const response = await apiUtil.get<User>(`/user/users/${userId}`);
     set((state) => ({ user: response.data }));
   },
   clearUsers: () => {
@@ -56,11 +58,11 @@ const useUserStore = create<UserState>((set, get) => ({
     }));
   },
   saveUser: async (_user) => {
-    const response = await ApiUtil.post<User>('/user/users', _user);
+    const response = await apiUtil.post<User>('/user/users', _user);
     return response.data;
   },
   deleteUser: async (userIds) => {
-    await ApiUtil.delete('/user/users', {
+    await apiUtil.delete('/user/users', {
       userIds: userIds,
     });
   },

@@ -16,15 +16,9 @@ const Confirm = ({
     okText: 'Yes',
     okType: 'primary',
     cancelText: 'No',
-    onOk() {
-      onOk();
-    },
+    onOk,
     onCancel() {},
-    afterClose: () => {
-      if (typeof afterClose === 'function') {
-        afterClose();
-      }
-    },
+    afterClose,
   });
 };
 

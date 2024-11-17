@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import qs from 'qs';
 import { create, StoreApi, UseBoundStore } from 'zustand';
+import Confirm from '../components/Confirm';
 
 interface LoadingState {
   loading: boolean;
@@ -11,21 +12,19 @@ class ApiUtil {
   static apiUtil: ApiUtil = new ApiUtil();
   axiosInstance: AxiosInstance;
   useLoadingStore: UseBoundStore<StoreApi<LoadingState>>;
+  isError = false;
+  navigate: ((path: string) => void) | null = null;
+
+  init(navigate: (path: string) => void) {
+    this.navigate = navigate;
+  }
 
   constructor() {
-    const accessToken = JSON.parse(
-      localStorage.getItem('Authorization') ?? '{}',
-    ).state?.accessToken;
-
     this.axiosInstance = axios.create({
       baseURL: 'http://localhost:8080',
       timeout: 15000,
       paramsSerializer: function (params) {
         return qs.stringify(params, { arrayFormat: 'comma' });
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -44,37 +43,81 @@ class ApiUtil {
       },
     );
     this.axiosInstance.interceptors.response.use(
-      (config) => {
+      (response) => {
         this.useLoadingStore.getState().setLoading(false);
-        return config;
+        return response;
       },
       (error) => {
         this.useLoadingStore.getState().setLoading(false);
-        // window.location.href = '/';
+
+        if (!this.isError) {
+          this.isError = true;
+          Confirm({
+            title: 'Logout',
+            onOk() {
+              ApiUtil.apiUtil.goLogin();
+            },
+            afterClose() {
+              ApiUtil.apiUtil.isError = false;
+            },
+          });
+        }
       },
     );
   }
 
+  goLogin = () => {
+    if (this.navigate) {
+      this.navigate('/');
+    }
+  };
+
+  getAccessToken = () => {
+    const accessToken = JSON.parse(
+      localStorage.getItem('Authorization') ?? '{}',
+    ).state?.accessToken;
+
+    if (accessToken) {
+      return `Bearer ${accessToken}`;
+    }
+
+    return '';
+  };
+
   get = async <T>(path: string, params?: any): Promise<AxiosResponse<T>> => {
     const response = await this.axiosInstance.get<T>(path, {
       params: params,
+      headers: {
+        Authorization: this.getAccessToken(),
+      },
     });
     return response;
   };
 
   post = async <R>(path: string, data: any): Promise<AxiosResponse<R>> => {
-    const response = await this.axiosInstance.post(path, data);
+    const response = await this.axiosInstance.post(path, data, {
+      headers: {
+        Authorization: this.getAccessToken(),
+      },
+    });
     return response;
   };
 
   put = async <T>(path: string, data: any): Promise<AxiosResponse<T>> => {
-    const response = await this.axiosInstance.put(path, data);
+    const response = await this.axiosInstance.put(path, data, {
+      headers: {
+        Authorization: this.getAccessToken(),
+      },
+    });
     return response;
   };
 
   delete = async <T>(path: string, params?: any): Promise<AxiosResponse<T>> => {
     const response = await this.axiosInstance.delete<T>(path, {
       params: params,
+      headers: {
+        Authorization: this.getAccessToken(),
+      },
     });
     return response;
   };

@@ -3,22 +3,14 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Confirm from '../../components/Confirm';
 import { useLoadingStore } from '../../utils/ApiUtil';
-import useCodeStore from '../common/store/useCodeStore';
 import User from './model/User';
 import useUserStore from './store/useUserStore';
 
 const UserList = () => {
   const { page, getUsers, clearUsers, deleteUser } = useUserStore();
   const { loading } = useLoadingStore();
-  const { getCodes } = useCodeStore();
   const navigate = useNavigate();
   const { state } = useLocation();
-
-  // 코드 조회
-  useEffect(() => {
-    const codeIds = ['category', 'sub_category'];
-    getCodes(codeIds);
-  }, [getCodes, state]);
 
   useEffect(() => {
     getUsers({});

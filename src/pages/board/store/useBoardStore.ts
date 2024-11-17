@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import ApiUtil from '../../../utils/ApiUtil';
+import apiUtil from '../../../utils/ApiUtil';
 import Page from '../../common/model/Page';
 import Board from '../model/Barod';
 
@@ -33,17 +33,19 @@ const useBoardStore = create<BoardState>((set, get) => ({
     page = get().page?.pageable.pageNumber,
     pageSize = get().page?.pageable.pageSize,
   }) => {
-    const response = await ApiUtil.get<Page<Board>>('/board/boards', {
+    const response = await apiUtil.get<Page<Board>>('/board/boards', {
       page: page,
       size: pageSize,
     });
-    set((state) => ({
-      page: response.data,
-      Board: null,
-    }));
+    if (response) {
+      set((state) => ({
+        page: response.data,
+        Board: null,
+      }));
+    }
   },
   getBoard: async (seq) => {
-    const response = await ApiUtil.get<Board>(`/board/boards/${seq}`);
+    const response = await apiUtil.get<Board>(`/board/boards/${seq}`);
     set((state) => ({ board: response.data }));
   },
   clearBoards: () => {
@@ -55,11 +57,11 @@ const useBoardStore = create<BoardState>((set, get) => ({
     }));
   },
   saveBoard: async (_board) => {
-    const response = await ApiUtil.post<Board>('/board/boards', _board);
+    const response = await apiUtil.post<Board>('/board/boards', _board);
     return response.data;
   },
   deleteBoard: async (seqs) => {
-    await ApiUtil.delete('/board/boards', {
+    await apiUtil.delete('/board/boards', {
       seqs: seqs,
     });
   },

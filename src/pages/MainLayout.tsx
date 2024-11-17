@@ -1,9 +1,11 @@
 import { NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import { nanoid } from '@reduxjs/toolkit';
 import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import React from 'react';
+import { Breadcrumb, Button, Flex, Layout, Menu, theme } from 'antd';
+import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import apiUtil from '../utils/ApiUtil';
+import useLoginStore from './login/store/useLoginStore';
 
 const { Header, Content, Sider } = Layout;
 
@@ -53,28 +55,50 @@ const items2: MenuProps['items'] = leftMenus.map((value) => {
 });
 
 const MainLayout: React.FC = () => {
+  const { logout } = useLoginStore();
+  const navigate = useNavigate();
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const navigate = useNavigate();
+  const boxStyle: React.CSSProperties = {
+    width: '100%',
+    height: 120,
+    borderRadius: 6,
+  };
+
+  useEffect(() => {
+    apiUtil.init(navigate);
+  }, [navigate]);
 
   return (
     <Layout>
       <Header style={{ display: 'flex', alignItems: 'center' }}>
-        <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['0']}
-          items={items1}
-          style={{ flex: 1, minWidth: 0 }}
-          onClick={({ key }) => {
-            if ('0' === key) {
-              navigate('/home');
-            }
-          }}
-        />
+        <Flex style={boxStyle} justify={'flex-end'} align={'center'}>
+          <div className="demo-logo" />
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={['0']}
+            items={items1}
+            style={{ flex: 1, minWidth: 0 }}
+            onClick={({ key }) => {
+              if ('0' === key) {
+                navigate('/home');
+              }
+            }}
+          />
+          <Button
+            type="primary"
+            onClick={() => {
+              logout();
+              navigate('/');
+            }}
+          >
+            Logout
+          </Button>
+        </Flex>
       </Header>
       <Layout>
         <Sider width={200} style={{ background: colorBgContainer }}>
