@@ -71,7 +71,7 @@ const MainLayout: React.FC = () => {
           style={{ flex: 1, minWidth: 0 }}
           onClick={({ key }) => {
             if ('0' === key) {
-              navigate('/');
+              navigate('/home');
             }
           }}
         />

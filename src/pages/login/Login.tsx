@@ -1,13 +1,21 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Flex, Form, Input, Layout, theme } from 'antd';
 import { Content, Footer } from 'antd/es/layout/layout';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useLoginStore from './store/useLoginStore';
 
 const Login = () => {
   const { login } = useLoginStore();
+  const navigate = useNavigate();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.submit();
+  }, [form]);
 
   return (
     <Layout>
@@ -21,13 +29,15 @@ const Login = () => {
           }}
         >
           <Form
+            form={form}
             name="login"
             initialValues={{ remember: true }}
             style={{
               maxWidth: 360,
             }}
-            onFinish={(values) => {
-              login(values.id, values.password);
+            onFinish={async (values) => {
+              await login(values.id, values.password);
+              navigate('/home');
             }}
           >
             <Form.Item

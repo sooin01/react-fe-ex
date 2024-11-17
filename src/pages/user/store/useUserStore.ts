@@ -37,6 +37,7 @@ const useUserStore = create<UserState>((set, get) => ({
       page: page,
       size: pageSize,
     });
+
     set((state) => ({
       page: response.data,
       user: null,

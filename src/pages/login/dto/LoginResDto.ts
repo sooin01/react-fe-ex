@@ -1,4 +1,4 @@
 export default interface LoginResDto {
-  id: string;
-  password: string;
+  accessToken: string;
+  refreshToken: string;
 }

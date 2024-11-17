@@ -13,6 +13,10 @@ class ApiUtil {
   useLoadingStore: UseBoundStore<StoreApi<LoadingState>>;
 
   constructor() {
+    const accessToken = JSON.parse(
+      localStorage.getItem('Authorization') ?? '{}',
+    ).state?.accessToken;
+
     this.axiosInstance = axios.create({
       baseURL: 'http://localhost:8080',
       timeout: 15000,
@@ -20,7 +24,8 @@ class ApiUtil {
         return qs.stringify(params, { arrayFormat: 'comma' });
       },
       headers: {
-        Authorization: 'sad',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -34,14 +39,19 @@ class ApiUtil {
         this.useLoadingStore.getState().setLoading(true);
         return config;
       },
-      (error) => {},
+      (error) => {
+        this.useLoadingStore.getState().setLoading(false);
+      },
     );
     this.axiosInstance.interceptors.response.use(
       (config) => {
         this.useLoadingStore.getState().setLoading(false);
         return config;
       },
-      (error) => {},
+      (error) => {
+        this.useLoadingStore.getState().setLoading(false);
+        // window.location.href = '/';
+      },
     );
   }
 
@@ -52,12 +62,12 @@ class ApiUtil {
     return response;
   };
 
-  post = async <T>(path: string, data: T): Promise<AxiosResponse<T>> => {
+  post = async <R>(path: string, data: any): Promise<AxiosResponse<R>> => {
     const response = await this.axiosInstance.post(path, data);
     return response;
   };
 
-  put = async <T>(path: string, data: T): Promise<AxiosResponse<T>> => {
+  put = async <T>(path: string, data: any): Promise<AxiosResponse<T>> => {
     const response = await this.axiosInstance.put(path, data);
     return response;
   };

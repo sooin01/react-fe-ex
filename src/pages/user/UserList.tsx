@@ -10,7 +10,7 @@ import useUserStore from './store/useUserStore';
 const UserList = () => {
   const { page, getUsers, clearUsers, deleteUser } = useUserStore();
   const { loading } = useLoadingStore();
-  const { getCode, getCodes } = useCodeStore();
+  const { getCodes } = useCodeStore();
   const navigate = useNavigate();
   const { state } = useLocation();
 
