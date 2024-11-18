@@ -18,16 +18,15 @@ const useLoginStore = create<LoginState>()(
           id,
           password,
         });
-        set((state) => ({
-          accessToken: response.data.accessToken,
-          refreshToken: response.data.refreshToken,
-        }));
+        if (response) {
+          set((state) => ({
+            accessToken: response.data.accessToken,
+            refreshToken: response.data.refreshToken,
+          }));
+        }
       },
       logout: () => {
-        set((state) => ({
-          accessToken: null,
-          refreshToken: null,
-        }));
+        localStorage.clear();
       },
     }),
     { name: 'Authorization' },

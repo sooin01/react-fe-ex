@@ -52,7 +52,7 @@ const Login = () => {
               rules={[
                 { required: true, message: 'Please input your Password!' },
               ]}
-              initialValue={'user1'}
+              initialValue={'ceFGFzjqXsXXkd9'}
             >
               <Input
                 prefix={<LockOutlined />}

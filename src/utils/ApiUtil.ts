@@ -51,16 +51,18 @@ class ApiUtil {
         this.useLoadingStore.getState().setLoading(false);
 
         if (!this.isError) {
-          this.isError = true;
-          Confirm({
-            title: 'Logout',
-            onOk() {
-              ApiUtil.apiUtil.goLogin();
-            },
-            afterClose() {
-              ApiUtil.apiUtil.isError = false;
-            },
-          });
+          if (error.status === 403) {
+            this.isError = true;
+            Confirm({
+              title: 'Login session expires.',
+              onOk() {
+                ApiUtil.apiUtil.goLogin();
+              },
+              afterClose() {
+                ApiUtil.apiUtil.isError = false;
+              },
+            });
+          }
         }
       },
     );
@@ -68,6 +70,7 @@ class ApiUtil {
 
   goLogin = () => {
     if (this.navigate) {
+      localStorage.clear();
       this.navigate('/');
     }
   };
