@@ -15,7 +15,9 @@ const Confirm = ({ title = 'Confirm?', onOk, afterClose }: ConfirmType) => {
     okType: 'primary',
     cancelText: 'No',
     onOk,
-    onCancel() {},
+    onCancel() {
+      console.log('cancel.');
+    },
     afterClose,
   });
 };
