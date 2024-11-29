@@ -53,6 +53,7 @@ const BoardForm = () => {
         autoComplete="off"
         onFinish={(values) => {
           Confirm({
+            title: 'Save?',
             async onOk() {
               const _Board = Object.assign({ ...board }, values);
               setBoard(await saveBoard(_Board));

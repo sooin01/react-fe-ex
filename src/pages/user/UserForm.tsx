@@ -45,6 +45,7 @@ const UserForm = () => {
         autoComplete="off"
         onFinish={(values) => {
           Confirm({
+            title: 'Save?',
             async onOk() {
               const _user = Object.assign({ ...user }, values);
               setUser(await saveUser(_user));

@@ -1,14 +1,12 @@
 import { Modal } from 'antd';
 
-const Confirm = ({
-  title = 'Save?',
-  onOk,
-  afterClose,
-}: {
+type ConfirmType = {
   title?: string;
   onOk: () => void;
   afterClose?: () => void;
-}) => {
+};
+
+const Confirm = ({ title = 'Confirm?', onOk, afterClose }: ConfirmType) => {
   const { confirm } = Modal;
 
   return confirm({
